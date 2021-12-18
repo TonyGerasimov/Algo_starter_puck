@@ -1,0 +1,5 @@
+.idea/
+__pycache__/
+main.py
+pandas_datareader.py
+

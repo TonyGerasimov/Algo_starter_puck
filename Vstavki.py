@@ -1,8 +1,9 @@
 import math
 import random
 import numpy as np
+import operator
 rng = np.random.RandomState(43)
-lst = np.random.randint(0,100, 10)
+lst = list(np.random.randint(0,100, 10))
 print(f'исходный лист {lst}')
 def insertion(data):
     '''Возвращает отсортированный массив.
@@ -88,21 +89,36 @@ def vybor(data:list) ->list:
                 min_index = j
         data[i],data[min_index] = data[min_index], data[i]
     return data
-def binar_search(data:list, num:float) ->list:
-    low = 0
-    high = len(data)-1
-    mid = low+high//2
-    while data[mid] != num and low <= high:
-        if num > data[mid]:
-            low = mid + 1
+
+#функция, которая будет выполнять операцию
+#поэлементного слияния-сортировки подмассивов
+def merge_list(left,right):
+    result_list = []
+    i = 0
+    j = 0
+    # цикл пока не дойдем до конца первого или второго списка.
+    while i<len(left) and j<len(right):
+        if left[i] <= right[j]:
+            result_list.append(left[i])
+            i +=1
         else:
-            high = mid -1
-        mid = (low + high)//2
-    if low > high:
-        print('No value')
-    else:
-        print(f'Искомый элемент {num} имеет индекс {mid}')
+            result_list.append(right[j])
+            j +=1
+    # сложение оставшихся элементов в неотсортированных массивах
+    result_list += left[i:] + right[j:]
+    return result_list
+# функция которая будет делить и сливать списки в общий отсортированный список
+def split_and_merge_list(data):
+    middle = len(data) //2
+    left = data[:middle]
+    right = data[middle:]
 
+    if len(left)>1:
+        left = split_and_merge_list(left)
+    if len(right)>1:
+        right = split_and_merge_list(right)
 
+    return merge_list(left, right)
 
-print(binar_search([i for i in range(100)], 6))
+print(split_and_merge_list(lst))
+
